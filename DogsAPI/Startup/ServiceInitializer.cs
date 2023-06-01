@@ -18,8 +18,8 @@ namespace DogsAPI.Startup
 
         public static void RegisterCustomDependencies(IServiceCollection services)
         {
-            services.AddDbContext<DogContext>(options => 
-                options.UseSqlServer(Configur));
+            //services.AddDbContext<DogContext>(options => 
+            //    options.UseSqlServer(Configuration.));
             services.AddScoped<IDogRepository, DogRepository>();
         }
 
