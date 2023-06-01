@@ -2,7 +2,7 @@
 using DogsAPI.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.RegisterApplicationServices();
+builder.Services.RegisterApplicationServices(builder.Configuration);
 
 builder.Services.AddControllers(); 
 

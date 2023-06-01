@@ -6,20 +6,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DogsAPI.Startup
 {
-    public static partial class ServiceInitializer
+    public static class ServiceInitializer
     {
-        public static  IServiceCollection RegisterApplicationServices(this IServiceCollection services)
+        public static  IServiceCollection RegisterApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            RegisterCustomDependencies(services);
+            RegisterCustomDependencies(services, configuration);
             RegisterSwagger(services);
             //RegisterHttpClientDependencies(services);
             return services;
         }
 
-        public static void RegisterCustomDependencies(IServiceCollection services)
+        public static void RegisterCustomDependencies(IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddDbContext<DogContext>(options => 
-            //    options.UseSqlServer(Configuration.));
+            services.AddDbContext<DogContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DogsAPI")));
             services.AddScoped<IDogRepository, DogRepository>();
         }
 
