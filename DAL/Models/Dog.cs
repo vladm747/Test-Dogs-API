@@ -7,16 +7,16 @@ namespace DAL.Models
         [Key]
         [Required]
         [StringLength(200)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         [Required]
         [StringLength(100)]
-        public string Color { get; set; }
+        public string Color { get; set; } = string.Empty;
         [Required]
         //TODO: write working regular expression for TailLength and Weight
         //[RegularExpression(@"/!\D+$/")]
-        public long TailLength{ get; set; }
+        public int TailLength{ get; set; }
         [Required]
         //[RegularExpression(@"/^\d+$/")]
-        public long Weight { get; set; }
+        public int Weight { get; set; }
     }
 }

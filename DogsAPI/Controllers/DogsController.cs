@@ -2,133 +2,66 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BLL.DTO;
+using BLL.Services.DI.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DAL.Context;
+using DAL.Infrastructure.DI.Abstract;
 using DAL.Models;
+using DogsAPI.Filters;
 
 namespace DogsAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/")]
     [ApiController]
+    [DogExceptionFilter]
     public class DogsController : ControllerBase
     {
-        private readonly DogContext _context;
+        private readonly IDogService _service;
 
-        public DogsController(DogContext context)
+        public DogsController(IDogService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // GET: api/Dogs
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Dog>>> Dogs()
+        [HttpGet("dogs")]
+        public IActionResult GetDogs()
         {
-            i
+            return Ok(_service.GetAllDogs());
         }
 
         // GET: api/Dogs/5
-        [HttpGet("{name}")]
-        public async Task<ActionResult<Dog>> Dog(string name)
+        [HttpGet("dog/{name}")]
+        public async Task<IActionResult> GetDogByName(string name)
         {
-            if (_context.Dogs == null)
-            {
-                return NotFound();
-            }
-            var dog = await _context.Dogs.FindAsync(name);
-
-            if (dog == null)
-            {
-                return NotFound();
-            }
-
-            return dog;
+            return Ok(_service.GetDogByNameAsync(name));
         }
 
         // PUT: api/Dogs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{name}")]
-        public async Task<IActionResult> Dog(string name, Dog dog)
+        [HttpPut("dog/{name}")]
+        public async Task<IActionResult> Dog(string name, [FromBody] DogUpdateDTO dog)
         {
-            if (name != dog.Name)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(dog).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DogExists(name))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _service.UpdateDogAsync(name, dog);
             return NoContent();
         }
 
         // POST: api/Dogs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Dog>> Dog(Dog dog)
+        [HttpPost("dog")]
+        public async Task<ActionResult<Dog>> AddDog(DogDTO dog)
         {
-            if (_context.Dogs == null)
-            {
-                return Problem("Entity set 'DogContext.Dogs'  is null.");
-            }
-            _context.Dogs.Add(dog);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (DogExists(dog.Name))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("Dog", new { name = dog.Name }, dog);
+            await _service.AddDogAsync(dog);
+            return CreatedAtAction(nameof(GetDogByName), new { name = dog.Name }, dog);
         }
 
         // DELETE: api/Dogs/5
-        [HttpDelete("{name}")]
+        [HttpDelete("dog/{name}")]
         public async Task<IActionResult> DeleteDog(string name)
         {
-            if (_context.Dogs == null)
-            {
-                return NotFound();
-            }
-            var dog = await _context.Dogs.FindAsync(name);
-            if (dog == null)
-            {
-                return NotFound();
-            }
-
-            _context.Dogs.Remove(dog);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool DogExists(string name)
-        {
-            return (_context.Dogs?.Any(e => e.Name == name)).GetValueOrDefault();
+            return await _service.DeleteDogAsync(name) ? Ok() : NotFound();
         }
     }
 }

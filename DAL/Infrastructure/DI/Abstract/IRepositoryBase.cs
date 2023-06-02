@@ -13,6 +13,6 @@ namespace DAL.Infrastructure.DI.Abstract
         Task<TEntity?> GetByKeyAsync(TKey key);
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
-        Task DeleteAsync(TEntity entity);
+        Task<int> DeleteAsync(TEntity entity);
     }
 }

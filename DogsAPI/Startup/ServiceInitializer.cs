@@ -1,6 +1,11 @@
-﻿using DAL.Context;
+﻿using AutoMapper;
+using BLL.AutoMapperProfile;
+using BLL.Services.DI.Abstract;
+using BLL.Services.DI.Implementation;
+using DAL.Context;
 using DAL.Infrastructure.DI.Abstract;
 using DAL.Infrastructure.DI.Implementation;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -20,7 +25,9 @@ namespace DogsAPI.Startup
         {
             services.AddDbContext<DogContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DogsAPI")));
+            services.AddAutoMapper(typeof(DogProfile));
             services.AddScoped<IDogRepository, DogRepository>();
+            services.AddScoped<IDogService, DogService>();
         }
 
         private static void RegisterSwagger(IServiceCollection services)

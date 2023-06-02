@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Formats.Tar;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Context;
+﻿using DAL.Context;
 using DAL.Infrastructure.DI.Abstract;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace DAL.Infrastructure.DI.Implementation
 {
     public abstract class RepositoryBase<TEntity, TKey>: IRepositoryBase<TEntity, TKey> where TEntity : class
     {
-        private readonly DogContext _context;
+        private readonly DbContext _context;
         public DbSet<TEntity> Table { get; }
         protected RepositoryBase(DogContext context)
         {
@@ -42,16 +35,16 @@ namespace DAL.Infrastructure.DI.Implementation
             await SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(TEntity entity)
+        public async Task<int> DeleteAsync(TEntity entity)
         {
             Table.Remove(entity);
-            await SaveChangesAsync();
+            return await SaveChangesAsync();
         }
-        public virtual async Task SaveChangesAsync()
+        public virtual async Task<int> SaveChangesAsync()
         {
             try
             {
-                await _context.SaveChangesAsync();
+               return await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
