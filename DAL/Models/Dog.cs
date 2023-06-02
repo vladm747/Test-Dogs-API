@@ -12,10 +12,11 @@ namespace DAL.Models
         [StringLength(100)]
         public string Color { get; set; }
         [Required]
-        [RegularExpression(@"/^\d+$/", ErrorMessage = "Tail height is a negative number or is not a number")]
+        //TODO: write working regular expression for TailLength and Weight
+        //[RegularExpression(@"/!\D+$/")]
         public long TailLength{ get; set; }
         [Required]
-        [RegularExpression(@"/^\d+$/", ErrorMessage = "Weight is a negative number or is not a number")]
+        //[RegularExpression(@"/^\d+$/")]
         public long Weight { get; set; }
     }
 }

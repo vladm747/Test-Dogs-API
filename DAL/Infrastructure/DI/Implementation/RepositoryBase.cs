@@ -4,37 +4,59 @@ using System.Formats.Tar;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Context;
 using DAL.Infrastructure.DI.Abstract;
-using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace DAL.Infrastructure.DI.Implementation
 {
-    public abstract class RepositoryBase<TEntity, TKey>: IRepositoryBase<TEntity, TKey>
+    public abstract class RepositoryBase<TEntity, TKey>: IRepositoryBase<TEntity, TKey> where TEntity : class
     {
-        public Task<IEnumerable<TEntity>> GetAllAsync()
+        private readonly DogContext _context;
+        public DbSet<TEntity> Table { get; }
+        protected RepositoryBase(DogContext context)
         {
-            throw new NotImplementedException();
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            Table = _context.Set<TEntity>();
+        }
+        public virtual IEnumerable<TEntity> GetAll()
+        {
+            return Table;
         }
 
-        public Task<TEntity> GetByKeyAsync(TKey key)
+        public virtual async Task<TEntity?> GetByKeyAsync(TKey key)
         {
-            throw new NotImplementedException();
+            return await Table.FindAsync(key);
         }
 
-        public Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await Table.AddAsync(entity);
+            await SaveChangesAsync();
         }
 
-        public Task UpdateAsync(TEntity entity)
+        public async Task UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            Table.Update(entity);
+            await SaveChangesAsync();
         }
 
-        public Task DeleteAsync(TEntity entity)
+        public async Task DeleteAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            Table.Remove(entity);
+            await SaveChangesAsync();
+        }
+        public virtual async Task SaveChangesAsync()
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred updating the database", ex);
+            }
         }
     }
 }
