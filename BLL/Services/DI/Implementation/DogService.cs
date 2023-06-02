@@ -28,6 +28,8 @@ namespace BLL.Services.DI.Implementation
         public async Task<DogDTO?> GetDogByNameAsync(string name)
         {
             Dog? dog = await _dogRepository.GetByKeyAsync(name ?? throw new ArgumentNullException(nameof(name), "Name must be not null!"));
+            if (dog == null)
+                throw new KeyNotFoundException($"Dog with name {name} doesn't exist in database!");
             return dog != null ? _mapper.Map<DogDTO>(dog) : null;
         }
 
@@ -49,7 +51,7 @@ namespace BLL.Services.DI.Implementation
             Dog? item = await _dogRepository.GetByKeyAsync(name);
 
             if (item == null)
-                throw new KeyNotFoundException($"Dog with name {name} doesn`t exist in database!");
+                throw new KeyNotFoundException($"Dog with name {name} doesn't exist in database!");
 
             _mapper.Map(dog, item);
 
@@ -61,7 +63,7 @@ namespace BLL.Services.DI.Implementation
             Dog? item = await _dogRepository.GetByKeyAsync(name);
             
             if (item == null)
-                throw new KeyNotFoundException($"Dog with name {name} doesn`t exist in database!");
+                throw new KeyNotFoundException($"Dog with name {name} doesn't exist in database!");
 
             return await _dogRepository.DeleteAsync(item) > 0;
         }

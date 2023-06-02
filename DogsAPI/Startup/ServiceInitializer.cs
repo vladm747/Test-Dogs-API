@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using BLL.AutoMapperProfile;
+﻿using BLL.AutoMapperProfile;
 using BLL.Services.DI.Abstract;
 using BLL.Services.DI.Implementation;
 using DAL.Context;
 using DAL.Infrastructure.DI.Abstract;
 using DAL.Infrastructure.DI.Implementation;
-using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -17,7 +15,6 @@ namespace DogsAPI.Startup
         {
             RegisterCustomDependencies(services, configuration);
             RegisterSwagger(services);
-            //RegisterHttpClientDependencies(services);
             return services;
         }
 

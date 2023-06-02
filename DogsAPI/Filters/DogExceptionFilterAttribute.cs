@@ -7,22 +7,19 @@ namespace DogsAPI.Filters
     {
         public async Task OnExceptionAsync(ExceptionContext context)
         {
-            var action = context.ActionDescriptor.DisplayName;
-            var callStack = context.Exception.StackTrace;
-            var exceptionMessage = context.Exception.Message;
-
-            if (context.Exception is AggregateException aggregateException)
+            var ex = context.Exception;
+            IActionResult actionResult = ex switch
             {
-                exceptionMessage = "Several exceptions might happen" +
-                                   string.Join(';', aggregateException.InnerExceptions.Select(e => e.Message));
-            }
-
-            context.Result = new ContentResult
-            {
-                Content = $"Calling {action} failed, because: {exceptionMessage}. Callstack: {callStack}.",
-                StatusCode = 500
+                KeyNotFoundException => new NotFoundObjectResult(new ErrorDTO { Message = ex.Message }),
+                ArgumentNullException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message }),
+                ArgumentException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message })
+                {
+                    StatusCode = 500
+                }
             };
+           
             context.ExceptionHandled = true;
+            context.Result = actionResult;
         }
     }
 }

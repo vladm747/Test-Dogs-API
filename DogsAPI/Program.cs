@@ -1,10 +1,10 @@
-
+using DogsAPI.Filters;
 using DogsAPI.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterApplicationServices(builder.Configuration);
 
-builder.Services.AddControllers(); 
+builder.Services.AddControllers(options => options.Filters.Add<DogExceptionFilterAttribute>()); 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -12,7 +12,6 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 app.ConfigureMiddleware();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
