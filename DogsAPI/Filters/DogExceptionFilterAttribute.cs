@@ -1,17 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DogsAPI.Filters
 {
-    public class DogExceptionFilterAttribute: Attribute, IAsyncExceptionFilter
+    public class DogExceptionFilterAttribute: Attribute, IExceptionFilter
     {
-        public async Task OnExceptionAsync(ExceptionContext context)
+        public void OnException(ExceptionContext context)
         {
             var ex = context.Exception;
             IActionResult actionResult = ex switch
             {
                 KeyNotFoundException => new NotFoundObjectResult(new ErrorDTO { Message = ex.Message }),
                 ArgumentNullException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message }),
+                InvalidOperationException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message }),
                 ArgumentException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message })
                 {
                     StatusCode = 500

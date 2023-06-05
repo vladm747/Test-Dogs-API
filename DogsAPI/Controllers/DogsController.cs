@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BLL.DTO;
 using BLL.Services.DI.Abstract;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DAL.Context;
-using DAL.Infrastructure.DI.Abstract;
 using DAL.Models;
-using DogsAPI.Filters;
 
 namespace DogsAPI.Controllers
 {
@@ -26,9 +18,11 @@ namespace DogsAPI.Controllers
         }
 
         [HttpGet("dogs")]
-        public IActionResult GetDogs()
+        public IActionResult GetDogs([FromQuery] string? attribute = null, [FromQuery] string? order = null, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
         {
-            return Ok(_service.GetAllDogs());
+            var dogs = pageNumber == null && pageSize == null ? _service.GetAllDogs(attribute ?? "name", order) 
+                : _service.GetAllDogs(attribute ?? "name", order, pageNumber!.Value, pageSize!.Value);
+            return Ok(dogs);
         }
 
         [HttpGet("dog/{name}")]
