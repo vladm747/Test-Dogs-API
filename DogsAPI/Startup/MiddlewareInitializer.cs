@@ -1,6 +1,8 @@
-﻿namespace DogsAPI.Startup
+﻿using Microsoft.AspNetCore.Builder;
+
+namespace DogsAPI.Startup
 {
-    public static partial class MiddlewareInitializer
+    public static class MiddlewareInitializer
     {
         public static WebApplication ConfigureMiddleware(this WebApplication app)
         {
