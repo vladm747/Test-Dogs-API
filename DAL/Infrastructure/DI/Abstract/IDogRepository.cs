@@ -2,8 +2,5 @@
 
 namespace DAL.Infrastructure.DI.Abstract
 {
-    public interface IDogRepository: IRepositoryBase<Dog, string>
-    {
-
-    }
+    public interface IDogRepository : IRepositoryBase<Dog, string> { }
 }

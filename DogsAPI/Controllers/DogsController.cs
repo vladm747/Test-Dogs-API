@@ -18,38 +18,45 @@ namespace DogsAPI.Controllers
         }
 
         [HttpGet("dogs")]
-        public IActionResult GetDogs([FromQuery] string? attribute = null, [FromQuery] string? order = null, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
+        public IActionResult GetDogs([FromQuery] string attribute = "name", [FromQuery] string order = "asc", [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
         {
-            var dogs = pageNumber == null && pageSize == null ? _service.GetAllDogs(attribute ?? "name", order) 
-                : _service.GetAllDogs(attribute ?? "name", order, pageNumber!.Value, pageSize!.Value);
-            return Ok(dogs);
+            try
+            {
+                var dogs = pageNumber == null && pageSize == null
+                    ? _service.GetAllDogs(attribute, order)
+                    : _service.GetAllDogs(attribute, order, pageNumber!.Value, pageSize!.Value);
+                return Ok(dogs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("dog/{name}")]
         public async Task<IActionResult> GetDogByName(string name)
         {
-
             return Ok(await _service.GetDogByNameAsync(name));
         }
-        
+
         [HttpPut("dog/{name}")]
         public async Task<IActionResult> Dog(string name, [FromBody] DogUpdateDTO dog)
         {
-            await _service.UpdateDogAsync(name, dog);
-            return Ok();
+            var result = await _service.UpdateDogAsync(name, dog);
+            return Ok(result);
         }
-        
+
         [HttpPost("dog")]
-        public async Task<ActionResult<Dog>> AddDog(DogDTO dog)
+        public async Task<IActionResult> AddDog(DogDTO dog)
         {
-            await _service.AddDogAsync(dog);
-            return CreatedAtAction(nameof(GetDogByName), new { name = dog.Name }, dog);
+            var result = await _service.AddDogAsync(dog);
+            return CreatedAtAction(nameof(GetDogByName), new { name = dog.Name }, result);
         }
-        
+
         [HttpDelete("dog/{name}")]
         public async Task<IActionResult> DeleteDog(string name)
         {
-            return await _service.DeleteDogAsync(name) ? Ok() : NotFound();
+            return await _service.DeleteDogAsync(name) ? NoContent() : NotFound();
         }
     }
 }

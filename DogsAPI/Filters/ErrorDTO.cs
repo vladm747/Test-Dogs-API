@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace DogsAPI.Filters
+﻿namespace DogsAPI.Filters
 {
     public class ErrorDTO
     {
-        public string Message { get; set; } = String.Empty;
+        public string Message { get; set; } = string.Empty;
     }
 }

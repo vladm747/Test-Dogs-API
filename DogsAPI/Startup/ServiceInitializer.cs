@@ -5,8 +5,6 @@ using DAL.Context;
 using DAL.Infrastructure.DI.Abstract;
 using DAL.Infrastructure.DI.Implementation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 
 namespace DogsAPI.Startup
