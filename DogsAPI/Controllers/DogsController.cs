@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-using BLL.DTO;
+﻿using BLL.DTO;
 using BLL.Services.DI.Abstract;
 using Microsoft.AspNetCore.Mvc;
-using DAL.Models;
 
 namespace DogsAPI.Controllers
 {
@@ -18,13 +16,13 @@ namespace DogsAPI.Controllers
         }
 
         [HttpGet("dogs")]
-        public IActionResult GetDogs([FromQuery] string attribute = "name", [FromQuery] string order = "asc", [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
+        public IActionResult GetDogs([FromQuery] string? attribute = null, [FromQuery] string? order = null, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
         {
             try
             {
                 var dogs = pageNumber == null && pageSize == null
-                    ? _service.GetAllDogs(attribute, order)
-                    : _service.GetAllDogs(attribute, order, pageNumber!.Value, pageSize!.Value);
+                    ? _service.GetAllDogs(attribute ?? "name", order ?? "asc")
+                    : _service.GetAllDogs(attribute ?? "name", order ?? "asc", pageNumber!.Value, pageSize!.Value);
                 return Ok(dogs);
             }
             catch (Exception ex)

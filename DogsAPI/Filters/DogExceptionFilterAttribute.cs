@@ -15,13 +15,10 @@ namespace DogsAPI.Filters
             IActionResult actionResult = ex switch
             {
                 KeyNotFoundException => new NotFoundObjectResult(new ErrorDTO { Message = ex.Message }),
-                //ArgumentNullException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message }),
-                //InvalidOperationException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message }),
-                //ArgumentException => new BadRequestObjectResult(new ErrorDTO { Message = ex.Message })
-                //{
-                //    StatusCode = 500
-                //},
-                _ => new BadRequestObjectResult(new ErrorDTO() { Message = ex.Message }) { StatusCode = 500}
+                _ => new BadRequestObjectResult(new ErrorDTO() { Message = ex.Message })
+                {
+                    StatusCode = 500
+                }
             };
 
             context.ExceptionHandled = true;

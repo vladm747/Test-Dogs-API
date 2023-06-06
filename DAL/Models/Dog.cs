@@ -7,16 +7,16 @@ namespace DAL.Models
         [Key]
         [Required]
         [StringLength(200)]
+        [RegularExpression(@"([A-Z]){1}([a-z])*")]
         public string Name { get; set; } = string.Empty;
         [Required]
         [StringLength(100)]
         public string Color { get; set; } = string.Empty;
         [Required]
-        //TODO: write working regular expression for TailLength and Weight
-        //[RegularExpression(@"/!\D+$/")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int TailLength{ get; set; }
         [Required]
-        //[RegularExpression(@"/^\d+$/")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int Weight { get; set; }
     }
 }
